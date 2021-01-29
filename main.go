@@ -53,7 +53,7 @@ func listAll(w http.ResponseWriter, req *http.Request) {
     result := ""
 
     for k, v := range gldata {
-        result += k + "->" + v + "\n"
+        result += k + ":" + v + "\n"
     }
     w.Write([]byte(result))
 }
