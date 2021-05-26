@@ -6,6 +6,7 @@ import (
     "os"
     "io/ioutil"
     "strings"
+    "path"
 )
 
 var gldata = make(map[string]string)
@@ -62,20 +63,20 @@ func listAll(w http.ResponseWriter, req *http.Request) {
 }
 
 func upload(w http.ResponseWriter, req *http.Request) {
-	log.Println("Received file")
+	req.ParseMultipartForm(10 << 30)
 
-	req.ParseMultipartForm(10 << 20)
-
-	file, handler, err := req.FormFile("filter")
+	file, headers, err := req.FormFile("filter")
 	if err != nil {
-		log.Println("Error Retrieving the File")
+		log.Println("Error Retrieving the File\n")
 		log.Println(err)
 		return
 	}
 
+  filename := path.Base((*headers).Filename)
 	defer file.Close()
-	log.Printf("Uploaded File: %s\n", handler.Filename)
-	f, err := os.Create("filter.wasm")
+	log.Printf("Uploaded File: %s\n", filename)
+
+	f, err := os.Create(filename)
 	if err != nil {
 		log.Println(err)
 		return
@@ -89,7 +90,7 @@ func upload(w http.ResponseWriter, req *http.Request) {
 	}
 
 	f.Write(fileBytes)
-	log.Println("Successfully Uploaded File\n")
+	log.Println("Successfully Uploaded File")
 }
 
 func getFilter(w http.ResponseWriter, req *http.Request) {
