@@ -63,8 +63,6 @@ func listAll(w http.ResponseWriter, req *http.Request) {
 }
 
 func upload(w http.ResponseWriter, req *http.Request) {
-	req.ParseMultipartForm(10 << 30)
-
 	file, headers, err := req.FormFile("filter")
 	if err != nil {
 		log.Println("Error Retrieving the File\n")
